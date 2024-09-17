@@ -2,14 +2,14 @@
 <head>
     <title>RPG</title>
     <script src=https://code.jquery.com/jquery-3.6.0.min.js></script>
-    <link href="/css/my.css" rel="stylesheet">
+    <link href="./css/my.css" rel="stylesheet">
     <script>
 
         function show_list(page_number){
 
             $("tr:has(td)").remove();
 
-            let url = "/rest/players?";
+            let url = "/rpg-1.0-SNAPSHOT/rest/players?";
 
             let countPerPage = $("#count_1").val();
             if(countPerPage == null) {
@@ -36,10 +36,10 @@
                         +new Date(item.birthday).toLocaleDateString() + "</td><td>"
                         +item.banned + "</td><td>"
                         + "<button id='button_edit_" + item.id + "' onclick='editAccount(" + item.id +")'>"
-                        +"<img src='/img/edit.png'>"
+                        +"<img src='/rpg-1.0-SNAPSHOT/img/edit.png'>"
                         +"</button>" + "</td><td>"
                         +"<button id='button_delete_" + item.id + "' onclick='deleteAccount(" + item.id + ")'>"
-                        + "<img src='/img/delete.png'>"
+                        + "<img src='/rpg-1.0-SNAPSHOT/img/delete.png'>"
                         + "</button>" + "</td>"
                     ).appendTo("#table_1")
                 });
@@ -72,7 +72,7 @@
             let identifier_edit= "#button_edit_" + id;
             let identifier_delete = "#button_delete_" + id;
             $(identifier_delete).remove();
-            let save_image_tag = "<img src='/img/save.png'>";
+            let save_image_tag = "<img src='/rpg-1.0-SNAPSHOT/img/save.png'>";
             $(identifier_edit).html(save_image_tag);
 
             let current_tr_element = $(identifier_edit).parent().parent();
@@ -115,7 +115,7 @@
             let value_profession = $("#select_profession_" + id).val();
             let value_banned = $("#select_banned_" + id).val();
 
-            let url = "/rest/players/" + id;
+            let url = "/rpg-1.0-SNAPSHOT/rest/players/" + id;
 
             $.ajax({
                 url: url,
@@ -193,7 +193,7 @@
 
         function deleteAccount (id) {
 
-            let url = "/rest/players/" + id;
+            let url = "/rpg-1.0-SNAPSHOT/rest/players/" + id;
             $.ajax({
             url: url,
             async: false,
@@ -218,7 +218,7 @@
         }
 
         function getTotalCount(){
-            let url = "/rest/players/count";
+            let url = "/rpg-1.0-SNAPSHOT/rest/players/count";
             let res = 0;
 
             $.ajax({
@@ -243,7 +243,19 @@
             let value_banned = $("#input_banned_new").val();
 
             let current_page = window.location.href;
-            let url = "/rest/players";
+            let url = "/rpg-1.0-SNAPSHOT/rest/players";
+
+            const data = {
+                "name": value_name,
+                "title": value_title,
+                "race": value_race,
+                "profession": value_profession,
+                "level": value_level,
+                "birthday": new Date(value_birthday).getTime(),
+                "banned": value_banned
+            };
+
+            console.log("Data in POST", data);
 
             $.ajax({
                 url: url,
@@ -251,15 +263,7 @@
                 dataType: 'json',
                 contentType: 'application/json;charset=UTF-8',
                 async: false,
-                data: JSON.stringify({
-                    "name": value_name,
-                    "title": value_title,
-                    "race": value_race,
-                    "profession": value_profession,
-                    "level": value_level,
-                    "birthday": new Date(value_birthday).getTime(),
-                    "banned": value_banned
-                }),
+                data: JSON.stringify(data),
                 success: function () {
                     $("#input_name_new").val("");
                     $("#input_title_new").val("");
